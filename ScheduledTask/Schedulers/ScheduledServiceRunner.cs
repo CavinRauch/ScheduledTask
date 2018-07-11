@@ -28,10 +28,10 @@ namespace ScheduledTask
 				_scheduler.Shutdown(waitForJobsToComplete);
 		}
 
-		public static void ScheduleJobs(params IScheduledJob[] jobs) => ScheduleJobs(jobs.ToArray());
+		public static void ScheduleJob(IScheduledJob scheduledJob) => ScheduleJobs(new IScheduledJob[] { scheduledJob });
+
 		public static void ScheduleJobs(IEnumerable<IScheduledJob> scheduledJobs)
 		{
-			// Tell quartz to schedule the job using our trigger
 			foreach (var job in scheduledJobs)
 				_scheduler.ScheduleJob(job.JobDetail, job.Schedule);
 		}

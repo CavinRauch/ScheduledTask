@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Topshelf;
 using Topshelf.Quartz;
+using Common.Logging;
 
 namespace ScheduledTask.Schedulers
 {
-	public static class WindowsServiceRunner
+	public static class WindowsServiceInstaller
 	{
 		internal static bool Running = false;
 
@@ -18,16 +19,18 @@ namespace ScheduledTask.Schedulers
 		/// Will create a windows service which will be used to schedule available jobs.
 		/// </summary>
 		/// <param name="service"></param>
-		public static void CreateWindowsService(IScheduledService service)
+		public static void InstallAsWindowsService(IScheduledService service)
 		{
 			if (Running)
 				throw new InvalidOperationException("Service has already been created. Only one service may be run at time. Consider using jobs for multiple");
 
-			if (service.FindJobs)
-				service.Jobs = AppDomain.CurrentDomain.GetAssemblies()
+			//Add Enabled Executes
+			service.Jobs.AddRange(AppDomain.CurrentDomain.GetAssemblies()
 								  .SelectMany(a => a.GetTypes())
-								  .Where(t => typeof(IScheduledJob).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-								  .Select(c => Activator.CreateInstance(c) as IScheduledJob);
+								  .Where(t => Attribute.IsDefined(t, typeof(AutoExecuteJobAttribute))
+											&& ((AutoExecuteJobAttribute)t.GetCustomAttributes(typeof(AutoExecuteJobAttribute), false).First()).Enabled)
+								  .Select(c => Activator.CreateInstance(c) as IScheduledJob)
+								  .Where(c => c != null));
 
 			HostFactory.Run(x =>
 			{

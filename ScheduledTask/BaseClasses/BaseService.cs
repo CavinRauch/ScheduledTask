@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace ScheduledTask.BaseClasses
 {
-	public class BaseScheduledService : IScheduledService
+	public class BaseWindowsService : IScheduledService
 	{
 		public string Description { get; set; }
 		public string DisplayName { get; set; }
 		public string ServiceName { get; set; }
 
-		public BaseScheduledService()
+		public BaseWindowsService()
 		{
 			//Set the name of the service
 			DisplayName = ServiceName = this.GetType().Name;
@@ -39,13 +39,8 @@ namespace ScheduledTask.BaseClasses
 		}
 
 		/// <summary>
-		/// If true searches for all jobs that implementation IScheduledJob across the assemblies else will revert to the provided jobs.
-		/// </summary>
-		public bool FindJobs { get; set; } = true;
-
-		/// <summary>
 		/// Jobs execute when service is running.
 		/// </summary>
-		public IEnumerable<IScheduledJob> Jobs { get; set; }
+		public List<IScheduledJob> Jobs { get; set; } = new List<IScheduledJob>();
 	}
 }

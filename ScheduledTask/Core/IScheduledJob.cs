@@ -12,5 +12,5 @@ namespace ScheduledTask.Core
 		ITrigger Schedule { get; set; }
 
 		IJobDetail JobDetail { get; }
-	}
+	}	
 }

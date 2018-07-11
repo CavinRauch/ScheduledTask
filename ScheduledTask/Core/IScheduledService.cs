@@ -26,16 +26,10 @@ namespace ScheduledTask.Core
 		/// <summary>
 		/// Jobs execute when service is running.
 		/// </summary>
-		IEnumerable<IScheduledJob> Jobs { get; set; }
-
-		/// <summary>
-		/// If true searches for all jobs that implementation IScheduledJob across the assemblies else will revert to the provided jobs.
-		/// </summary>
-		bool FindJobs { get; }
-
+		List<IScheduledJob> Jobs { get; set; }
+		
 		string ServiceName { get; }
 		string DisplayName { get; }
 		string Description { get; }
 	}
-	
 }
